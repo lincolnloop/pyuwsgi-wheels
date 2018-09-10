@@ -1,0 +1,6 @@
+[submodule "multibuild"]
+	path = multibuild
+	url = https://github.com/matthew-brett/multibuild.git
+[submodule "uwsgi"]
+	path = uwsgi
+	url = https://github.com/unbit/uwsgi.git

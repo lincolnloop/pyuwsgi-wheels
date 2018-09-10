@@ -1,0 +1,122 @@
+env:
+    global:
+        - REPO_DIR=uwsgi
+        # Commit from your-project that you want to build
+        - BUILD_COMMIT=HEAD
+        # pip dependencies to _build_ your project
+        - BUILD_DEPENDS=""
+        # pip dependencies to _test_ your project.  Include any dependencies
+        # that you need, that are also specified in BUILD_DEPENDS, this will be
+        # a separate install.
+        - TEST_DEPENDS="pytest"
+        - PLAT=x86_64
+        - UNICODE_WIDTH=32
+        # - WHEELHOUSE_UPLOADER_USERNAME=travis-worker
+
+language: python
+# The Travis Python version is unrelated to the version we build and test
+# with.  This is set with the MB_PYTHON_VERSION variable.
+python: 3.5
+sudo: required
+dist: trusty
+services: docker
+
+matrix:
+  exclude:
+    # Exclude the default Python 3.5 build
+    - python: 3.5
+  include:
+    - os: linux
+      env: MB_PYTHON_VERSION=2.7
+    - os: linux
+      env:
+        - MB_PYTHON_VERSION=2.7
+        - UNICODE_WIDTH=16
+    - os: linux
+      env:
+        - MB_PYTHON_VERSION=2.7
+        - PLAT=i686
+    - os: linux
+      env:
+        - MB_PYTHON_VERSION=2.7
+        - PLAT=i686
+        - UNICODE_WIDTH=16
+    - os: linux
+      env:
+        - MB_PYTHON_VERSION=3.3
+    - os: linux
+      env:
+        - MB_PYTHON_VERSION=3.3
+        - PLAT=i686
+    - os: linux
+      env:
+        - MB_PYTHON_VERSION=3.4
+    - os: linux
+      env:
+        - MB_PYTHON_VERSION=3.4
+        - PLAT=i686
+    - os: linux
+      env:
+        - MB_PYTHON_VERSION=3.5
+    - os: linux
+      env:
+        - MB_PYTHON_VERSION=3.5
+        - PLAT=i686
+    - os: linux
+      env:
+        - MB_PYTHON_VERSION=3.6
+    - os: linux
+      env:
+        - MB_PYTHON_VERSION=3.6
+        - PLAT=i686
+    - os: linux
+      env:
+        - MB_PYTHON_VERSION=3.7
+    - os: linux
+      env:
+        - MB_PYTHON_VERSION=3.7
+        - PLAT=i686
+    - os: osx
+      language: generic
+      env:
+        - MB_PYTHON_VERSION=2.7
+    - os: osx
+      language: generic
+      env:
+        - MB_PYTHON_VERSION=3.4
+    - os: osx
+      language: generic
+      env:
+        - MB_PYTHON_VERSION=3.5
+    - os: osx
+      language: generic
+      env:
+        - MB_PYTHON_VERSION=3.6
+    - os: osx
+      language: generic
+      env:
+        - MB_PYTHON_VERSION=pypy-5.7
+
+before_install:
+    - source multibuild/common_utils.sh
+    - source multibuild/travis_steps.sh
+    - before_install
+
+install:
+    # Maybe get and clean and patch source
+    - clean_code $REPO_DIR $BUILD_COMMIT
+    - build_wheel $REPO_DIR $PLAT
+
+script:
+    - install_run $PLAT
+
+after_success:
+    # Upload wheels to Rackspace container
+    # - pip install wheelhouse-uploader
+    # This uploads the wheels to a Rackspace container owned by the
+    # scikit-learn team, available at http://wheels.scipy.org.  See above
+    # for information on using this account or choosing another.
+    #- python -m wheelhouse_uploader upload --local-folder
+    #    ${TRAVIS_BUILD_DIR}/wheelhouse/
+    #    --no-update-index
+    #    wheels
