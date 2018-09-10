@@ -9,6 +9,7 @@ env:
         # that you need, that are also specified in BUILD_DEPENDS, this will be
         # a separate install.
         - TEST_DEPENDS="pytest"
+        - APPEND_VERSION="a1"
         - PLAT=x86_64
         - UNICODE_WIDTH=32
         # - WHEELHOUSE_UPLOADER_USERNAME=travis-worker
