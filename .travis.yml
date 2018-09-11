@@ -12,7 +12,8 @@ env:
         - APPEND_VERSION="a1"
         - PLAT=x86_64
         - UNICODE_WIDTH=32
-        # - WHEELHOUSE_UPLOADER_USERNAME=travis-worker
+        - secure: "uiN7FaQe0QSqDX83E28s3nmP99SawRLstgspz5eFPlEAuxYIhZW9lH4lLF5VSi15UpigMbwlH0tfnX2vFBI+B8zjJUWyK42x0wyjRSXJjzzip72sXKlQfGXqXHI6vr1p/og1mMeYWK8pCKqdePaolEjXaOp02BqbcJUKwiwkAf6hd5Cy2nk3vJ7NSu3OcpibUv17jPM8pKW3j7zKJe3+nakIAPPcKxDxVnVX1qiEzfDE4zaX0bFVEkjE20oJashwD3/wft3n6ZjDmmzAYV3ltyEjBcEXl2aVCg7hD1meAbiLXaOFAH1/ud4vQ+dkyplXy+6BJQgct6f8nPqmP0UV2+oYz6IgfTgFThJcy7e4XcaFLbxqqMmqTEn5/kXT9EQ8sZi1eP9E8wXo9Wu9q0d4B4fMtMpl/OVKIbrNTMLVbZ6yVQP5xC2f9gDkeVIujWoToP69DDu6uQQUo5DdrmFqf7DfgesahEc03wIfskH6FgdfGP9w/dMuIglIwf6mNLGz6MyHdDEc8AdLHkNAYqQ0ddk6yR1ucviqc1aRKKYVWCVHdxtrS8RUslXKvXP/S/kYIolN8bhCerCTarwrfE7BGAPgwmCshcFlfikscISY7OsJvMUfWZ19eLU5e5eIshgXEhn4VzBVgd0/rcvEjTUtKlCPjjX7d6YI1fpWST56v3Y="
+        - secure: "Q2xIUeUhTj3PpI3x8KMyu6M3SCkhhBpzCSHwT88BopTnYGxsBDr1QbIrnBdo0a/3kHtG4iYbA1SQ0A4V7eL7x47YuvxeM7Waque5PDARYbW2kYa6FC2Vs6psf9V4N2UjCGS92kwkAbADUYmhIwHLIbq14R7FTr6+gX0fnD6FmTMCB9Czu/XKAT04wQDMeytD22LQfjH3fVzAEfONQ3AHbkEUU4wP9yyAgH9nCUSZF+YToxjspiKR+7yFKklmQbdYn389JlWO1feZfkA0WBhukwjW2vbpqa2ZBRZL2kIsRzREcI2lTbMltx0wcPYFMwAMTA7uRdXaQrvQCR0UmbBMHPUEBdAzHhX2RF4RNiwFSn0sHaDSsmGxuqNNRFM3kFHAG2/whwJeulNzlyrtfENBKL1j/2nL6ZxeJVThIf//lWp9AzWdgHQSCpWg0YhNeRRowQmlV6jumiBque1bzESrKFcCAK+kq4aIv9jI11E0P+Y136ejyVFjiCuUAZjKs5/ZEyOP/Wot8Vzhs6nLgDlzTe8cTK+gzC0GWC+Oysf++3W4oOmzXExsJgjkuP0g3ScEvgqXcByhAVm/F7jfekGFexnRFqiOsG55Jvz8bXUiyk5k/hqji2TQlP40YlFA00nrvPWAVCgjhTFTsYIc49ul+FBMkLJtkJTUGA+sbiz/q/k="
 
 language: python
 # The Travis Python version is unrelated to the version we build and test
@@ -106,12 +107,8 @@ script:
     - install_run $PLAT
 
 after_success:
-    # Upload wheels to Rackspace container
-    # - pip install wheelhouse-uploader
-    # This uploads the wheels to a Rackspace container owned by the
-    # scikit-learn team, available at http://wheels.scipy.org.  See above
-    # for information on using this account or choosing another.
-    #- python -m wheelhouse_uploader upload --local-folder
-    #    ${TRAVIS_BUILD_DIR}/wheelhouse/
-    #    --no-update-index
-    #    wheels
+    - pip install awscli
+    - |
+        awscli s3 cp --acl=public-read \
+          ${TRAVIS_BUILD_DIR}/wheelhouse/ \
+          s3://ll-hotwheels/pyuwsgi/$(python setup.py --version)${APPEND_VERSION:-""}/
