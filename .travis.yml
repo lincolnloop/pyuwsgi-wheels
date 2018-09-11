@@ -109,6 +109,6 @@ script:
 after_success:
     - pip install awscli
     - |
-        awscli s3 cp --acl=public-read \
-          ${TRAVIS_BUILD_DIR}/wheelhouse/ \
-          s3://ll-hotwheels/pyuwsgi/$(python setup.py --version)${APPEND_VERSION:-""}/
+        aws s3 cp --acl=public-read \
+          ${TRAVIS_BUILD_DIR}/wheelhouse/* \
+          s3://ll-hotwheels/pyuwsgi/$(python $REPO_DIR/setup.py --version)${APPEND_VERSION:-""}/
