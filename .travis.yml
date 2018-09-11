@@ -9,6 +9,8 @@ env:
         # that you need, that are also specified in BUILD_DEPENDS, this will be
         # a separate install.
         - TEST_DEPENDS="pytest"
+        # Use this to add a pre-release version to the end of the uWSGI version
+        # e.g., a4, b1
         - APPEND_VERSION="a4"
         - PLAT=x86_64
         - UNICODE_WIDTH=32
