@@ -11,7 +11,7 @@ env:
         - TEST_DEPENDS="pytest"
         # Use this to add a pre-release version to the end of the uWSGI version
         # e.g., a4, b1
-        - APPEND_VERSION="a4"
+        - APPEND_VERSION=a4
         - PLAT=x86_64
         - UNICODE_WIDTH=32
         - secure: "uiN7FaQe0QSqDX83E28s3nmP99SawRLstgspz5eFPlEAuxYIhZW9lH4lLF5VSi15UpigMbwlH0tfnX2vFBI+B8zjJUWyK42x0wyjRSXJjzzip72sXKlQfGXqXHI6vr1p/og1mMeYWK8pCKqdePaolEjXaOp02BqbcJUKwiwkAf6hd5Cy2nk3vJ7NSu3OcpibUv17jPM8pKW3j7zKJe3+nakIAPPcKxDxVnVX1qiEzfDE4zaX0bFVEkjE20oJashwD3/wft3n6ZjDmmzAYV3ltyEjBcEXl2aVCg7hD1meAbiLXaOFAH1/ud4vQ+dkyplXy+6BJQgct6f8nPqmP0UV2+oYz6IgfTgFThJcy7e4XcaFLbxqqMmqTEn5/kXT9EQ8sZi1eP9E8wXo9Wu9q0d4B4fMtMpl/OVKIbrNTMLVbZ6yVQP5xC2f9gDkeVIujWoToP69DDu6uQQUo5DdrmFqf7DfgesahEc03wIfskH6FgdfGP9w/dMuIglIwf6mNLGz6MyHdDEc8AdLHkNAYqQ0ddk6yR1ucviqc1aRKKYVWCVHdxtrS8RUslXKvXP/S/kYIolN8bhCerCTarwrfE7BGAPgwmCshcFlfikscISY7OsJvMUfWZ19eLU5e5eIshgXEhn4VzBVgd0/rcvEjTUtKlCPjjX7d6YI1fpWST56v3Y="
@@ -102,8 +102,7 @@ before_install:
 
 install:
     - clean_code $REPO_DIR $BUILD_COMMIT
-    - mv $REPO_DIR/setup.pyuwsgi.py $REPO_DIR/setup.py
-    - sed -i.bak 's/uwsgiconfig\.uwsgi_version/uwsgiconfig.uwsgi_version + "'$APPEND_VERSION'"/' $REPO_DIR/setup.py && rm $REPO_DIR/setup.py.bak
+    - ./patch-uwsgi-packaging.sh $REPO_DIR
     - build_wheel $REPO_DIR $PLAT
 
 script:
