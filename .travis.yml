@@ -94,6 +94,8 @@ matrix:
       - MB_PYTHON_VERSION=3.7
 
 before_install:
+    - mv $REPO_DIR/setup.pyuwsgi.py $REPO_DIR/setup.py
+    - sed -i.bak 's/uwsgiconfig\.uwsgi_version/uwsgiconfig.uwsgi_version + "'$APPEND_VERSION'"/' $REPO_DIR/setup.py
     - source multibuild/common_utils.sh
     - source multibuild/travis_steps.sh
     - before_install
