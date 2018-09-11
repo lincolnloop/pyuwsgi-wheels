@@ -44,13 +44,6 @@ matrix:
         - UNICODE_WIDTH=16
     - os: linux
       env:
-        - MB_PYTHON_VERSION=3.3
-    - os: linux
-      env:
-        - MB_PYTHON_VERSION=3.3
-        - PLAT=i686
-    - os: linux
-      env:
         - MB_PYTHON_VERSION=3.4
     - os: linux
       env:
@@ -77,6 +70,7 @@ matrix:
       env:
         - MB_PYTHON_VERSION=3.7
         - PLAT=i686
+
     - os: osx
       language: generic
       env:
@@ -96,7 +90,7 @@ matrix:
     - os: osx
       language: generic
       env:
-        - MB_PYTHON_VERSION=pypy-5.7
+      - MB_PYTHON_VERSION=3.7
 
 before_install:
     - source multibuild/common_utils.sh
