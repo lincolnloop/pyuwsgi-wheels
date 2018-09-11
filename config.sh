@@ -7,7 +7,6 @@ JANSSON_ROOT=jansson-2.11
 
 function pre_build {
     build_pcre
-    build_libyaml
     build_zlib
     build_jansson
 }
