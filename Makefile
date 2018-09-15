@@ -25,7 +25,7 @@ build/pyuwsgi-$(VERSION): build/$(HASH).tar.gz
 	cd build; tar xzf $(HASH).tar.gz
 	mv build/uwsgi-$(HASH) build/pyuwsgi-$(VERSION)
 	APPEND_VERSION=$(APPEND_VERSION) ./patch-uwsgi-packaging.sh build/pyuwsgi-$(VERSION)
-	echo "recursive-include . *" > build/pyuwsgi-$(VERSION)/MANIFEST.in
+	echo "graft ." > build/pyuwsgi-$(VERSION)/MANIFEST.in
 
 # Create sdist from patched uWSGI
 dist/$(VERSION)/pyuwsgi-$(VERSION).tar.gz: build/pyuwsgi-$(VERSION)
