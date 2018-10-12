@@ -25,3 +25,15 @@ function build_jansson {
 function run_tests {
     pyuwsgi --help
 }
+
+function install_delocate {
+    check_pip
+    if [ $(lex_ver $(get_py_mm)) -lt $(lex_ver 2.7) ]; then
+        # Wheel 0.30 doesn't work for Python 2.6; see:
+        # https://github.com/pypa/wheel/issues/193
+        $PIP_CMD install "wheel<=0.29"
+    fi
+    #$PIP_CMD install delocate
+    # https://github.com/matthew-brett/delocate/pull/39
+    $PIP_CMD install https://github.com/natefoo/delocate/archive/06673679eaaf67db88cbe280456abbf988705d75.zip
+}
