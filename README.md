@@ -17,7 +17,7 @@ pip install -U setuptools twine
 To cut a new release:
 
 1. Update `APPEND_VERSION` in `.travis.yml` to add a pre-release tag to the upstream uWSGI version
-2. Run `make update` to update uWSGI and [multibuild](https://github.com/matthew-brett/multibuild). uWSGI should be pinned to the [uwsgi-2.0](https://github.com/unbit/uwsgi/tree/uwsgi-2.0) branch.
+2. Run `make update` to update uWSGI and [multibuild](https://github.com/matthew-brett/multibuild). uWSGI should be pinned to the [latest release](https://github.com/unbit/uwsgi/releases).
 3. Push changes and wait for Travis to finish.
 4. Run `make all` which will:
     * create an `sdist` locally

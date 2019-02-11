@@ -7,7 +7,7 @@ SHELL := bash
 
 # Figure out what version we're building
 UPSTREAM_VERSION := $(shell cd uwsgi; python setup.pyuwsgi.py --version)
-APPEND_VERSION := $(shell grep -v '\#' .travis.yml | grep "APPEND_VERSION=" | cut -d'=' -f2)
+APPEND_VERSION := $(shell grep -v '\#' .travis.yml | grep "APPEND_VERSION=" | cut -d'=' -f2 | tr -d '[:space:]')
 VERSION := $(UPSTREAM_VERSION)$(APPEND_VERSION)
 HASH := $(shell cd uwsgi; git rev-parse HEAD)
 
