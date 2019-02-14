@@ -137,7 +137,7 @@ In addition to the default plugins, the [`stats_pusher_statsd`](https://uwsgi-do
 plugin is included by default in `pyuwsgi` where it is typically optional for uWSGI.
 
 The full uWSGI documentation can be found at
-[https://uwsgi-docs.readthedocs.org](https://uwsgi-docs.readthedocs.org).
+[https://uwsgi-docs.readthedocs.io](https://uwsgi-docs.readthedocs.io).
 
 ## License
 
