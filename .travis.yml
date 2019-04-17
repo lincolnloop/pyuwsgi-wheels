@@ -12,6 +12,7 @@ env:
         # Use this to add a pre-release version to the end of the uWSGI version
         # e.g., a4, b1
         - APPEND_VERSION=.post0
+        - DOCKER_IMAGE=quay.io/pypa/manylinux2010_x86_64
         # Exclude SSL from the wheel builds
         - UWSGI_PROFILE=pyuwsginossl
         - PLAT=x86_64
