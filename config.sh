@@ -37,6 +37,7 @@ function install_delocate {
     $PIP_CMD install https://github.com/natefoo/delocate/archive/06673679eaaf67db88cbe280456abbf988705d75.zip
 }
 
+if [ -z "$IS_OSX" ]; then
 # target manylinux2010
 function repair_wheelhouse {
     local in_dir=$1
@@ -52,3 +53,4 @@ function repair_wheelhouse {
     done
     chmod -R a+rwX $out_dir
 }
+fi
