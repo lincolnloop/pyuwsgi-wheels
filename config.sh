@@ -36,21 +36,3 @@ function install_delocate {
     # https://github.com/matthew-brett/delocate/pull/39
     $PIP_CMD install https://github.com/natefoo/delocate/archive/06673679eaaf67db88cbe280456abbf988705d75.zip
 }
-
-if [ -z "$IS_OSX" ]; then
-# target manylinux2010
-function repair_wheelhouse {
-    local in_dir=$1
-    local out_dir=${2:-$in_dir}
-    for whl in $in_dir/*.whl; do
-        if [[ $whl == *none-any.whl ]]; then  # Pure Python wheel
-            if [ "$in_dir" != "$out_dir" ]; then cp $whl $out_dir; fi
-        else
-            auditwheel repair $whl --plat=manylinux2010_x86_64 -w $out_dir/
-            # Remove unfixed if writing into same directory
-            if [ "$in_dir" == "$out_dir" ]; then rm $whl; fi
-        fi
-    done
-    chmod -R a+rwX $out_dir
-}
-fi
