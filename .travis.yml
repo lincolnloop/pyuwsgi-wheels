@@ -2,7 +2,7 @@ env:
     global:
         - REPO_DIR=uwsgi
         # Commit from your-project that you want to build
-        - BUILD_COMMIT=2.0.18
+        - BUILD_COMMIT=2.0.19
         # pip dependencies to _build_ your project
         - BUILD_DEPENDS=""
         # pip dependencies to _test_ your project.  Include any dependencies
@@ -11,7 +11,7 @@ env:
         - TEST_DEPENDS="pytest"
         # Use this to add a pre-release version to the end of the uWSGI version
         # e.g., a4, b1
-        - APPEND_VERSION=.post0
+        - APPEND_VERSION=""
         - MB_ML_VER=2010
         # Exclude SSL from the wheel builds
         - UWSGI_PROFILE=pyuwsginossl
