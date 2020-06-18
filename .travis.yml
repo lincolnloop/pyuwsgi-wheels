@@ -2,7 +2,7 @@ env:
     global:
         - REPO_DIR=uwsgi
         # Commit from your-project that you want to build
-        - BUILD_COMMIT=2.0.19
+        - BUILD_COMMIT=2.0.19.1
         # pip dependencies to _build_ your project
         - BUILD_DEPENDS=""
         # pip dependencies to _test_ your project.  Include any dependencies
