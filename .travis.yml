@@ -108,4 +108,4 @@ after_success:
     - |
         aws s3 cp --acl=public-read \
           ${TRAVIS_BUILD_DIR}/wheelhouse/* \
-          s3://ll-hotwheels/pyuwsgi/$(python $REPO_DIR/setup.py --version)/
+          s3://ll-share-public/pyuwsgi/$(python $REPO_DIR/setup.py --version)/

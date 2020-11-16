@@ -13,7 +13,7 @@ HASH := $(shell cd uwsgi; git rev-parse HEAD)
 
 # Pull down wheels built at Travis and stored to S3
 dist/$(VERSION): dist/$(VERSION)/pyuwsgi-$(VERSION).tar.gz
-	aws s3 cp --recursive s3://ll-hotwheels/pyuwsgi/$(VERSION) $@
+	aws s3 cp --recursive s3://ll-share-public/pyuwsgi/$(VERSION) $@
 
 # Grab a clean checkout of uWSGI
 build/$(HASH).tar.gz:
