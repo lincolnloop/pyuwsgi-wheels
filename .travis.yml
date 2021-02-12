@@ -17,8 +17,6 @@ env:
         - UWSGI_PROFILE=pyuwsginossl
         - PLAT=x86_64
         - UNICODE_WIDTH=32
-        - secure: jrxNS/BUkpPQ/NZp6OdGEWho9EPeQb58klVXFCHIFS2zw7KelUx+UIC3M3v1DtZCHQSroHGxkYOlHOt38OSgKfkNoxD4z2sS2ld7OEIMoHJeZ9nJ0CAPRT7k1dUfUhjkXIh0DNqw5IfjqzixJKq+l0l2HThLPf9fYmjTqV/5Q72g5PADan8l0hnKM/zR9plYYHQ7qh3ESm2H/VsOjIvVbX+xvb6vBU9gMOW3oh5KEEK0DUfdS8PdJL9FXE5PmJLvmu99699RmOUQbaIhjBz1LiKYwZdzEDhig+bne5b6u+92IqNp7AiS4RgaP0dgWsRuTS4JSBFhDucrAdh2bdMnEeALxyHcw8S+6nCKRENXyTj9q7xJwHIOG0PgYveKhiMWEmvksX41RAtVlmj8AnVJ7045MhUS0jkjaTp6qRzvEPzJshbD1zv9wL6LNm4KRxCQ2cJWLQuWgKDxZCiFIIEu0SNpXRYiVDycNanAcKkUOeneg8dxHqsJylEzG9XIXy99pJTPWwyKRYkmJmH7LKpc2bwM8h2O3iWK28gj3vINeIm5kKjR+NTcIrhUQsqCqaKx0lRAv/qMbmaXWqkfnMW5DSQmaPfViCzOST8u4ZMtG2CyQ3SCsz5/Arib5AAubzb7lHpGc6KAhzu+SHg0tp6Mn1uRVxafYfPGbo2uIQArZIY=
-        - secure: WeQm3qTXKK27QOel0NJKVpjEfU88kGN/13sQM/lDpa7FGBuXnmWTLMf7An7GhS76swgU+tjuGpGAbU6HK3pKfUG1Giz9ytoUtjYy4friJJYXdiSy6QPjiBE6m69ExOzN/uXPeooYeKz5Ytt1yocnlSaK0nzXGosqCZdRN4iLBGiy7vDE3oEZXCJyarlLQJV+R7OJavApnVZ+vHEnQZPltsbsGQpxsWuabnbCOzTMZpzkZBHpiX39BtIZUrrPr6I0W7KR76aHMFDjn7vNAM/V4E/i3Xztc6JKZFuvcGdSi2hSGjEQoASKrdJF5QPNSZfh+MB0rG5bAUT2KOFZp+DGgYzxUniTVtsfs1nLz1UptF/MVxML7aR9USqiQwT9/7JELgnjRGHC9NVKXgPakhbWXTIS5RR2Q81DTa6UYPU0TXPZDAylu5lLLmTfjdjTKxWoGtjxcLatZALuG2Gi6wKLRdYpJ9IMcQWUW1ixx5yf3Pl8l28E9WUDPEDLQPo1E70YteXrjhMFS7Ad/8lSLy1UaoRwGW1GbYRcsUobbHbJ5iojsLL7HrLGxu/fZTYAKoFvg3hegpcKI+RsCaVLJnD72sXs+9Z/2pydgAph8dF9F0/vNfpTRSyJyUZJa6bRGrpMmemoAxrZqyXNl8nZlr8tlp/+4/StkXslmG9nTUyIeDA=
 
 language: generic
 services: docker
@@ -75,9 +73,12 @@ install:
 script:
     - install_run $PLAT
 
-after_success:
-    - pip install awscli
-    - |
-        aws s3 cp --acl=public-read \
-          ${TRAVIS_BUILD_DIR}/wheelhouse/* \
-          s3://ll-share-public/pyuwsgi/$(python $REPO_DIR/setup.py --version)/
+deploy:
+  provider: s3
+  access_key_id: "AKIAR7D27PGPLP6LMZM3"
+  secret_access_key:
+    secure: "FLdoK/S/FG5FnEevFJHOYykNRnEe8IUak2wgJTX2cSWptjBYM+jOcZcggZsgtDO7hJpZj6QqJGdLYdMz8CrAiVT0RnSDsJoYvUIMjzKYe9A7cyi4VvkcK23t42vMcw/eCvL/2L3qB9t9YqGWChoznyQ9pbyvcXB0wk0hj2kaEcPMeZDmbgV4HO6GAIi8pRo9BmQl6MqwOCG+KhYcjPjG+dIqZIbFd8GKgoHOXRkU+r2zr8gQiFB0n2G5kVbVgqAtWoH6kl5yxNZ02XJgF/aly1wTW0ogjOXGjp39+p4dAzGFbwXBRZTll2AjQ6wzCLSC8w4l/kTqmUCd2Kjfw6N+Qf5uUVXIqtCPNwraYxC3v8YYwwaDz+Dt5bGjAkXFcHK1CzrOx3/2L2Xlpln8oZZNzIxJ6YQBaZTicyzimJz8C4jJkYWsZpzPgSe01zc0Vyl5WfGFXx5xG2j/tK9zgZOdHTAeLg20xC6YNKE6zvhN3KjVp602uclcGjV4TslbC0xzp68aS/I7IaFDSj4yZ+bqmywjoVhp5sxNbUxQWPFM+kpvT6vApSca2jt4EJLLZeD2qHtZ3Lmh/+j5FOQk7Nras1ekG85FPb80vNjHmgwMhy5ILf+WaGxtl2JiBCfcRHDRywAc2830B3+g1jr4lBFXZPxu9VweyrzdgeS8u1LsUDE="
+  bucket: "ll-share-public"
+  skip_cleanup: true
+  local_dir: wheelhouse
+  upload-dir: pyuwsgi
