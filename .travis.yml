@@ -24,7 +24,7 @@ dist: xenial
 # osx image that enables building Apple silicon libraries
 osx_image: xcode12.2
 
-matrix:
+jobs:
   include:
     - os: linux
       env:
@@ -79,6 +79,5 @@ deploy:
   secret_access_key:
     secure: "FLdoK/S/FG5FnEevFJHOYykNRnEe8IUak2wgJTX2cSWptjBYM+jOcZcggZsgtDO7hJpZj6QqJGdLYdMz8CrAiVT0RnSDsJoYvUIMjzKYe9A7cyi4VvkcK23t42vMcw/eCvL/2L3qB9t9YqGWChoznyQ9pbyvcXB0wk0hj2kaEcPMeZDmbgV4HO6GAIi8pRo9BmQl6MqwOCG+KhYcjPjG+dIqZIbFd8GKgoHOXRkU+r2zr8gQiFB0n2G5kVbVgqAtWoH6kl5yxNZ02XJgF/aly1wTW0ogjOXGjp39+p4dAzGFbwXBRZTll2AjQ6wzCLSC8w4l/kTqmUCd2Kjfw6N+Qf5uUVXIqtCPNwraYxC3v8YYwwaDz+Dt5bGjAkXFcHK1CzrOx3/2L2Xlpln8oZZNzIxJ6YQBaZTicyzimJz8C4jJkYWsZpzPgSe01zc0Vyl5WfGFXx5xG2j/tK9zgZOdHTAeLg20xC6YNKE6zvhN3KjVp602uclcGjV4TslbC0xzp68aS/I7IaFDSj4yZ+bqmywjoVhp5sxNbUxQWPFM+kpvT6vApSca2jt4EJLLZeD2qHtZ3Lmh/+j5FOQk7Nras1ekG85FPb80vNjHmgwMhy5ILf+WaGxtl2JiBCfcRHDRywAc2830B3+g1jr4lBFXZPxu9VweyrzdgeS8u1LsUDE="
   bucket: "ll-share-public"
-  skip_cleanup: true
   local_dir: wheelhouse
-  upload-dir: pyuwsgi
+  upload_dir: pyuwsgi
