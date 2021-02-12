@@ -25,6 +25,8 @@ jobs:
         run: python -m cibuildwheel --output-dir wheelhouse uwsgi
         env:
           CIBW_SKIP: pp*
+          CIBW_ARCHS_MACOS: x86_64 universal2
+          CIBW_TEST_SKIP: "*_arm64 *_universal2:arm64"
           CIBW_ENVIRONMENT: APPEND_VERSION=.post0 UWSGI_PROFILE=pyuwsginossl
           CIBW_TEST_COMMAND: pyuwsgi --help
           CIBW_BEFORE_ALL: ./patch-uwsgi-packaging.sh uwsgi
