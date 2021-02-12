@@ -7,13 +7,10 @@ SHELL := bash
 
 # Figure out what version we're building
 UPSTREAM_VERSION := $(shell cd uwsgi; python setup.pyuwsgi.py --version)
-APPEND_VERSION := $(shell grep -v '\#' .travis.yml | grep "APPEND_VERSION=" | cut -d'=' -f2 | tr -d '[:space:]')
+# super fragile way of extracting `APPEND_VERSION` from workflow 🤮
+APPEND_VERSION := $(shell yq e '.jobs.build_wheels.steps[3].env.CIBW_ENVIRONMENT' .github/workflows/build.yml | cut -d' ' -f1 | cut -d= -f2)
 VERSION := $(UPSTREAM_VERSION)$(APPEND_VERSION)
 HASH := $(shell cd uwsgi; git rev-parse HEAD)
-
-# Pull down wheels built at Travis and stored to S3
-dist/$(VERSION): dist/$(VERSION)/pyuwsgi-$(VERSION).tar.gz
-	aws s3 cp --recursive s3://ll-share-public/pyuwsgi/$(VERSION) $@
 
 # Grab a clean checkout of uWSGI
 build/$(HASH).tar.gz:
@@ -46,7 +43,6 @@ all: dist/$(VERSION) upload
 .PHONY: update
 update:
 	cd uwsgi; git pull
-	cd multibuild; git pull
 
 
 .PHONY: clean
