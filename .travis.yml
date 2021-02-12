@@ -47,10 +47,10 @@ jobs:
     - os: osx
       env:
         - MB_PYTHON_VERSION=3.8
-    - os: osx
-      env:
-        - MB_PYTHON_VERSION=3.9
-        - PLAT="universal2"
+    # - os: osx
+    #   env:
+    #     - MB_PYTHON_VERSION=3.9
+    #     - PLAT="universal2"
     - os: osx
       env:
         - MB_PYTHON_VERSION=3.9
