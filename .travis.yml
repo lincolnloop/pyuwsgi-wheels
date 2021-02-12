@@ -28,9 +28,6 @@ jobs:
   include:
     - os: linux
       env:
-        - MB_PYTHON_VERSION=3.5
-    - os: linux
-      env:
         - MB_PYTHON_VERSION=3.6
     - os: linux
       env:
@@ -41,9 +38,6 @@ jobs:
     - os: linux
       env:
         - MB_PYTHON_VERSION=3.9
-    - os: osx
-      env:
-        - MB_PYTHON_VERSION=3.5
     - os: osx
       env:
         - MB_PYTHON_VERSION=3.6
