@@ -75,3 +75,5 @@ deploy:
   bucket: "ll-share-public"
   local_dir: wheelhouse
   upload_dir: pyuwsgi
+  on:
+    all_branches: true
