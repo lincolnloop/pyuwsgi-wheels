@@ -19,13 +19,13 @@ jobs:
       - uses: actions/setup-python@v2
 
       - name: Install cibuildwheel
-        run: python -m pip install cibuildwheel==1.9.0
+        run: python -m pip install cibuildwheel==2.2.2
 
       - name: Build wheels
         run: python -m cibuildwheel --output-dir wheelhouse uwsgi
         env:
           CIBW_SKIP: pp*
-          CIBW_ENVIRONMENT: APPEND_VERSION=.post0 UWSGI_PROFILE=pyuwsginossl
+          CIBW_ENVIRONMENT: APPEND_VERSION="" UWSGI_PROFILE=pyuwsginossl
           CIBW_TEST_COMMAND: pyuwsgi --help
           CIBW_BEFORE_ALL: ./patch-uwsgi-packaging.sh uwsgi
           # https://github.com/matthew-brett/delocate/pull/39
