@@ -2,7 +2,7 @@
 
 If you have an issue with pyuwsgi packaging, this is a good place to create an issue. If you have an issue with operating pyuwsgi, that is probably an issue for [uWSGI](https://github.com/unbit/uwsgi).
 
-Builds are done at [Travis CI](https://travis-ci.org/lincolnloop/pyuwsgi-wheels) and uploaded to S3.
+Builds are done via [GitHub Actions](https://github.com/lincolnloop/pyuwsgi-wheels/actions).
 
 ## Requirements
 
