@@ -25,7 +25,7 @@ jobs:
       - name: Build wheels
         run: python -m cibuildwheel --output-dir wheelhouse uwsgi
         env:
-          CIBW_SKIP: pp*
+          CIBW_SKIP: pp* cp38-macosx_universal2 cp38-macosx_arm64
           CIBW_ARCHS_MACOS: x86_64 universal2
           CIBW_TEST_SKIP: "*_arm64 *_universal2:arm64"
           CIBW_ENVIRONMENT: APPEND_VERSION="" UWSGI_PROFILE=pyuwsginossl
