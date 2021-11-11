@@ -1,4 +1,5 @@
 #!/bin/bash
+set -eu -o pipefail
 
 JANSSON_HASH=6e85f42dabe49a7831dbdd6d30dca8a966956b51a9a50ed534b82afc3fa5b2f4
 JANSSON_DOWNLOAD_URL=http://www.digip.org/jansson/releases
@@ -6,6 +7,7 @@ JANSSON_ROOT=jansson-2.11
 
 # From Multibuild
 BUILD_PREFIX="${BUILD_PREFIX:-/usr/local}"
+MULTIBUILD_DIR=$(dirname "${BASH_SOURCE[0]}")
 PCRE_VERSION=${PCRE_VERSION:-8.38}
 function rm_mkdir {
     # Remove directory if present, then make directory
@@ -60,7 +62,7 @@ function fetch_unpack {
             ln -s $our_archive $out_archive
         else
             # Otherwise download it.
-            curl -L $url > $out_archive
+            curl -sL $url > $out_archive
         fi
     fi
     # Unpack archive, refreshing contents, echoing dir and file
@@ -75,6 +77,20 @@ function fetch_unpack {
 }
 function build_pcre {
     build_simple pcre $PCRE_VERSION https://ftp.pcre.org/pub/pcre
+}
+
+function check_sha256sum {
+    local fname=$1
+    if [ -z "$fname" ]; then echo "Need path"; exit 1; fi
+    local sha256=$2
+    if [ -z "$sha256" ]; then echo "Need SHA256 hash"; exit 1; fi
+    echo "${sha256}  ${fname}" > ${fname}.sha256
+    if [ -n "$IS_MACOS" ]; then
+        shasum -a 256 -c ${fname}.sha256
+    else
+        sha256sum -c ${fname}.sha256
+    fi
+    rm ${fname}.sha256
 }
 # End from Multibuild
 
