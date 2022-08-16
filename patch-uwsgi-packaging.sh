@@ -6,6 +6,7 @@ SRC=$1
 APPEND_VERSION=${APPEND_VERSION:-""}
 
 cp setup.py $SRC/setup.py
+cp pyuwsgi_main.py $SRC/pyuwsgi_main.py
 sed -i.bak 's/uwsgiconfig\.uwsgi_version/uwsgiconfig.uwsgi_version + "'$APPEND_VERSION'"/' $SRC/setup.py
 rm $SRC/setup.py.bak
 cp $SRC/buildconf/pyuwsgi.ini $SRC/buildconf/pyuwsginossl.ini
