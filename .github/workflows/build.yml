@@ -30,7 +30,7 @@ jobs:
         run: python -m pip install cibuildwheel==2.15.0
 
       - name: Build wheels
-        run: python -m cibuildwheel --output-dir wheelhouse uwsgi
+        run: python -m cibuildwheel --output-dir dist uwsgi
         env:
           CIBW_ARCHS_LINUX: auto aarch64
           CIBW_ARCHS_MACOS: x86_64
@@ -45,7 +45,37 @@ jobs:
           CIBW_BEFORE_ALL: ./patch-uwsgi-packaging.sh uwsgi
           CIBW_BEFORE_BUILD_MACOS: IS_MACOS=1 ./pre_build.sh
           CIBW_BEFORE_BUILD_LINUX: ./pre_build.sh && (yum install -y zlib-devel || apk add zlib-dev)
-
+      - name: Create sdist
+        run: make sdist
       - uses: actions/upload-artifact@v3
         with:
-          path: ./wheelhouse/*.whl
+          name: dist
+          path: dist
+  verify:
+    if: "!startsWith(github.ref, 'refs/tags/')"
+    name: Verify wheels
+    runs-on: ubuntu-latest
+    needs: [build_wheels]
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: dist
+          path: dist
+      - name: Verify wheels
+        run: ls -lh dist
+  pypi-publish:
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+    name: Upload release to PyPI
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/pyuwsgi
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: dist
+          path: dist
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
