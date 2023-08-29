@@ -25,25 +25,17 @@ build/pyuwsgi-$(VERSION): build/$(HASH).tar.gz
 	echo "graft ." > build/pyuwsgi-$(VERSION)/MANIFEST.in
 
 # Create sdist from patched uWSGI
-dist/$(VERSION)/pyuwsgi-$(VERSION).tar.gz: build/pyuwsgi-$(VERSION)
-	mkdir -p dist/$(VERSION)
+dist/pyuwsgi-$(VERSION).tar.gz: build/pyuwsgi-$(VERSION)
+	mkdir -p dist
 	cd build/pyuwsgi-$(VERSION); python setup.py sdist
 	mv build/pyuwsgi-$(VERSION)/dist/pyuwsgi-$(VERSION).tar.gz $@
 
 .PHONY: sdist
-sdist: dist/$(VERSION)/pyuwsgi-$(VERSION).tar.gz
-
-.PHONY: upload
-upload:
-	twine upload dist/$(VERSION)/*
-
-.PHONY: all
-all: dist/$(VERSION) upload
+sdist: dist/pyuwsgi-$(VERSION).tar.gz
 
 .PHONY: update
 update:
 	cd uwsgi; git pull
-
 
 .PHONY: clean
 clean:
