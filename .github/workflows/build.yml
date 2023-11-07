@@ -46,7 +46,9 @@ jobs:
           CIBW_BEFORE_BUILD_MACOS: IS_MACOS=1 ./pre_build.sh
           CIBW_BEFORE_BUILD_LINUX: ./pre_build.sh && (yum install -y zlib-devel || apk add zlib-dev)
       - name: Create sdist
-        run: make sdist
+        run: |
+          pip install -U setuptools
+          make sdist
       - uses: actions/upload-artifact@v3
         with:
           name: dist
