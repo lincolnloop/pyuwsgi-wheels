@@ -40,7 +40,7 @@ jobs:
           # tesing on emulated arm64 isn't supported for MacOS
           # CIBW_TEST_SKIP: "*-macosx_arm64"
           CIBW_SKIP: cp36-* pp*
-          CIBW_ENVIRONMENT: APPEND_VERSION="" UWSGI_PROFILE=pyuwsginossl
+          CIBW_ENVIRONMENT: APPEND_VERSION=".post0" UWSGI_PROFILE=pyuwsginossl
           CIBW_TEST_COMMAND: pyuwsgi --help
           CIBW_BEFORE_ALL: ./patch-uwsgi-packaging.sh uwsgi
           CIBW_BEFORE_BUILD_MACOS: IS_MACOS=1 ./pre_build.sh
