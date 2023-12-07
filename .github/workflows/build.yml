@@ -36,10 +36,11 @@ jobs:
           CIBW_BEFORE_ALL: ./patch-uwsgi-packaging.sh uwsgi
           CIBW_BEFORE_BUILD_MACOS: IS_MACOS=1 ./pre_build.sh
           CIBW_BEFORE_BUILD_LINUX: ./pre_build.sh && (yum install -y zlib-devel || apk add zlib-dev)
+
       - name: Create sdist
         run: |
-          pip install -U setuptools
-          make sdist
+          rm -rf uwsgi && git submodule update --init
+          pipx run build --sdist --outdir dist uwsgi
       - uses: actions/upload-artifact@v3
         with:
           name: dist
