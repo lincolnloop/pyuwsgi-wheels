@@ -17,6 +17,9 @@ jobs:
         with:
           submodules: true
 
+      - name: Debug patch
+        run: patch -d uwsgi -p1 < uwsgi-version-debug.txt
+
       - name: Set up QEMU
         if: runner.os == 'Linux'
         uses: docker/setup-qemu-action@v1
