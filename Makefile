@@ -8,7 +8,7 @@ SHELL := bash
 # Figure out what version we're building
 UPSTREAM_VERSION := $(shell cd uwsgi; python setup.pyuwsgi.py --version)
 # super fragile way of extracting `APPEND_VERSION` from workflow 🤮
-APPEND_VERSION := $(shell yq e '.jobs.build_wheels.steps[3].env.CIBW_ENVIRONMENT' .github/workflows/build.yml | cut -d' ' -f1 | cut -d= -f2)
+APPEND_VERSION := $(shell yq e '.jobs.build_wheels.steps[4].env.CIBW_ENVIRONMENT' .github/workflows/build.yml | cut -d' ' -f1 | cut -d= -f2)
 VERSION := $(UPSTREAM_VERSION)$(APPEND_VERSION)
 HASH := $(shell cd uwsgi; git rev-parse HEAD)
 
@@ -32,6 +32,10 @@ dist/pyuwsgi-$(VERSION).tar.gz: build/pyuwsgi-$(VERSION)
 
 .PHONY: sdist
 sdist: dist/pyuwsgi-$(VERSION).tar.gz
+
+.PHONY: print-version
+print-version:
+	@echo $(VERSION)
 
 .PHONY: update
 update:
