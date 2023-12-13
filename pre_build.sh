@@ -107,6 +107,7 @@ function build_jansson {
 }
 
 function pre_build {
+    make -C uwsgi clean
     build_pcre
     #build_zlib
     build_jansson
