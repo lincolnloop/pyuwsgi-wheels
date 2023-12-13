@@ -88,6 +88,7 @@ jobs:
           CIBW_TEST_COMMAND: pyuwsgi --help
           CIBW_BEFORE_BUILD_MACOS: IS_MACOS=1 ./pre_build.sh
           CIBW_BEFORE_BUILD_LINUX: ./pre_build.sh && (yum install -y zlib-devel || apk add zlib-dev)
+          CIBW_BUILD_VERBOSITY_LINUX: "3"
 
       - uses: actions/upload-artifact@v3
         with:
