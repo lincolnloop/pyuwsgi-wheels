@@ -33,6 +33,10 @@ dist/pyuwsgi-$(VERSION).tar.gz: build/pyuwsgi-$(VERSION)
 .PHONY: sdist
 sdist: dist/pyuwsgi-$(VERSION).tar.gz
 
+.PHONY: print-version
+print-version:
+	@echo $(VERSION)
+
 .PHONY: update
 update:
 	cd uwsgi; git pull
