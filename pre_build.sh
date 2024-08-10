@@ -11,6 +11,9 @@ if [ -n "${IS_MACOS:-}" ]; then
     awk '{print $2}'
   )"
   export MACOSX_DEPLOYMENT_TARGET="$min_ver"
+  make_install=(sudo make install)
+else
+  make_install=(make install)
 fi
 
 JANSSON_HASH=6e85f42dabe49a7831dbdd6d30dca8a966956b51a9a50ed534b82afc3fa5b2f4
@@ -45,7 +48,7 @@ function build_simple {
     (cd "$name_version" \
         && ./configure --prefix="$BUILD_PREFIX" \
         && make -j4 \
-        && make install)
+        && "${make_install[@]}")
     touch "${name}-stamp"
 }
 function fetch_unpack {
@@ -114,7 +117,7 @@ function build_jansson {
     (cd "${JANSSON_ROOT}" \
         && ./configure --prefix="$BUILD_PREFIX" \
         && make -j4 \
-        && make install)
+        && "${make_install[@]}")
     touch jansson-stamp
 }
 
