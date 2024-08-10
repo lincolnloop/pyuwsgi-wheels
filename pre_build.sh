@@ -1,6 +1,18 @@
 #!/bin/bash
 set -eu -o pipefail
 
+if [ -n "${IS_MACOS:-}" ]; then
+  # make sure the linked binaries are equivalent to our target
+  python="$(command -v python)"
+  min_ver="$(
+    otool -l "$python" |
+    grep -A2 LC_VERSION_MIN_MACOSX |
+    tail -1 |
+    awk '{print $2}'
+  )"
+  export MACOSX_DEPLOYMENT_TARGET="$min_ver"
+fi
+
 JANSSON_HASH=6e85f42dabe49a7831dbdd6d30dca8a966956b51a9a50ed534b82afc3fa5b2f4
 JANSSON_DOWNLOAD_URL=http://www.digip.org/jansson/releases
 JANSSON_ROOT=jansson-2.11
