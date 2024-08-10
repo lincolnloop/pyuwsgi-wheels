@@ -76,6 +76,10 @@ jobs:
         with:
           platforms: all
 
+      - name: avoid homebrew pcre2
+        if: matrix.os == 'macos-14'
+        run: brew unlink pcre2
+
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.20.0
         with:
