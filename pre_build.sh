@@ -20,36 +20,19 @@ JANSSON_HASH=6e85f42dabe49a7831dbdd6d30dca8a966956b51a9a50ed534b82afc3fa5b2f4
 JANSSON_DOWNLOAD_URL=http://www.digip.org/jansson/releases
 JANSSON_ROOT=jansson-2.11
 
+PCRE2_HASH=86b9cb0aa3bcb7994faa88018292bc704cdbb708e785f7c74352ff6ea7d3175b
+PCRE2_DOWNLOAD_URL=https://github.com/PCRE2Project/pcre2/releases/download/pcre2-10.44/pcre2-10.44.tar.gz
+PCRE2_ROOT=pcre2-10.44
+
 # From Multibuild
 BUILD_PREFIX="${BUILD_PREFIX:-/usr/local}"
 MULTIBUILD_DIR=$(dirname "${BASH_SOURCE[0]}")
-PCRE_VERSION="${PCRE_VERSION:-8.38}"
 function rm_mkdir {
     # Remove directory if present, then make directory
     local path=$1
     if [ -z "$path" ]; then echo "Need not-empty path"; exit 1; fi
     if [ -d "$path" ]; then rm -rf "$path"; fi
     mkdir "$path"
-}
-function build_simple {
-    # Example: build_simple libpng $LIBPNG_VERSION \
-    #               https://download.sourceforge.net/libpng tar.gz
-    local name="$1"
-    local version="$2"
-    local url="$3"
-    local ext="${4:-tar.gz}"
-    echo "building $name@$version from $3"
-    if [ -e "${name}-stamp" ]; then
-        return
-    fi
-    local name_version="${name}-${version}"
-    local archive="${name_version}.${ext}"
-    fetch_unpack "$url/$archive"
-    (cd "$name_version" \
-        && ./configure --prefix="$BUILD_PREFIX" \
-        && make -j4 \
-        && "${make_install[@]}")
-    touch "${name}-stamp"
 }
 function fetch_unpack {
     # Fetch input archive name from input URL
@@ -89,8 +72,16 @@ function fetch_unpack {
 #        ls -1d * &&
 #        rsync --delete -ah * ..)
 }
-function build_pcre {
-    build_simple pcre "$PCRE_VERSION" https://s3.amazonaws.com/ll-share-public/pcre
+function build_pcre2 {
+    if [ -e pcre2-stamp ]; then return; fi
+    echo "building pcre2 from $PCRE2_DOWNLOAD_URL"
+    fetch_unpack "${PCRE2_DOWNLOAD_URL}"
+    check_sha256sum "${ARCHIVES_SDIR:-archives}/${PCRE2_ROOT}.tar.gz" "$PCRE2_HASH"
+    (cd "${PCRE2_ROOT}" \
+        && ./configure --prefix="$BUILD_PREFIX" \
+        && make -j4 \
+        && "${make_install[@]}")
+    touch pcre2-stamp
 }
 
 function check_sha256sum {
@@ -122,7 +113,7 @@ function build_jansson {
 }
 
 function pre_build {
-    build_pcre
+    build_pcre2
     #build_zlib
     build_jansson
 }
