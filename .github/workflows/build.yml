@@ -39,12 +39,17 @@ jobs:
           path: pre_build.sh
 
   build_wheels:
-    name: Build wheels for ${{ matrix.os }}
+    name: Build wheels for ${{ matrix.os }} ${{ matrix.arch }}
     needs: [build_sdist]
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-13, macos-14]
+        include:
+        - {os: ubuntu-latest, arch: aarch64}
+        - {os: ubuntu-latest, arch: i686}
+        - {os: ubuntu-latest, arch: x86_64}
+        - {os: macos-13, arch: x86_64}
+        - {os: macos-14, arch: arm64}
       fail-fast: false
 
     steps:
@@ -66,7 +71,7 @@ jobs:
           chmod +x pre_build.sh
 
       - name: Set up QEMU
-        if: runner.os == 'Linux'
+        if: matrix.arch == 'aarch64'
         uses: docker/setup-qemu-action@v1
         with:
           platforms: all
@@ -77,13 +82,7 @@ jobs:
           output-dir: dist
           package-dir: ./${{ needs.build_sdist.outputs.sdist_name }}
         env:
-          CIBW_ARCHS_LINUX: auto aarch64
-          CIBW_ARCHS_MACOS: x86_64
-          # cross-compile for arm64 on macos isn't working yet
-          # https://github.com/lincolnloop/pyuwsgi-wheels/issues/18
-          # CIBW_ARCHS_MACOS: x86_64 arm64
-          # tesing on emulated arm64 isn't supported for MacOS
-          # CIBW_TEST_SKIP: "*-macosx_arm64"
+          CIBW_ARCHS: ${{ matrix.arch }}
           CIBW_SKIP: cp36-* cp313-* pp*
           CIBW_ENVIRONMENT: APPEND_VERSION="" UWSGI_PROFILE=pyuwsginossl
           CIBW_TEST_COMMAND: "pyuwsgi --help"
