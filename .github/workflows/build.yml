@@ -1,7 +1,11 @@
 ---
 name: Build
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [main, test-me-*]
+    tags: '*'
+  pull_request:
 
 jobs:
   build_sdist:
@@ -35,12 +39,17 @@ jobs:
           path: pre_build.sh
 
   build_wheels:
-    name: Build wheels for ${{ matrix.os }}
+    name: Build wheels for ${{ matrix.os }} ${{ matrix.arch }}
     needs: [build_sdist]
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04, macos-11]
+        include:
+        - {os: ubuntu-latest, arch: aarch64}
+        - {os: ubuntu-latest, arch: i686}
+        - {os: ubuntu-latest, arch: x86_64}
+        - {os: macos-13, arch: x86_64}
+        - {os: macos-14, arch: arm64}
       fail-fast: false
 
     steps:
@@ -62,25 +71,23 @@ jobs:
           chmod +x pre_build.sh
 
       - name: Set up QEMU
-        if: runner.os == 'Linux'
+        if: matrix.arch == 'aarch64'
         uses: docker/setup-qemu-action@v1
         with:
           platforms: all
 
+      - name: avoid homebrew pcre2
+        if: matrix.os == 'macos-14'
+        run: brew unlink pcre2
+
       - name: Build wheels
-        uses: pypa/cibuildwheel@v2.16.2
+        uses: pypa/cibuildwheel@v2.20.0
         with:
           output-dir: dist
           package-dir: ./${{ needs.build_sdist.outputs.sdist_name }}
         env:
-          CIBW_ARCHS_LINUX: auto aarch64
-          CIBW_ARCHS_MACOS: x86_64
-          # cross-compile for arm64 on macos isn't working yet
-          # https://github.com/lincolnloop/pyuwsgi-wheels/issues/18
-          # CIBW_ARCHS_MACOS: x86_64 arm64
-          # tesing on emulated arm64 isn't supported for MacOS
-          # CIBW_TEST_SKIP: "*-macosx_arm64"
-          CIBW_SKIP: cp36-* pp*
+          CIBW_ARCHS: ${{ matrix.arch }}
+          CIBW_SKIP: cp36-* cp38-macosx_arm64 cp313-* pp*
           CIBW_ENVIRONMENT: APPEND_VERSION="" UWSGI_PROFILE=pyuwsginossl
           CIBW_TEST_COMMAND: "pyuwsgi --help"
           CIBW_BEFORE_BUILD_MACOS: "find . -name '*.o' -delete && IS_MACOS=1 ./pre_build.sh"
