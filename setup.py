@@ -176,12 +176,13 @@ setup(
         },
     py_modules=[
         'uwsgidecorators',
+        'pyuwsgi_main',
         ],
     ext_modules=[
         Extension('pyuwsgi', sources=[]),
         ],
     entry_points={
-        'console_scripts': ['pyuwsgi=pyuwsgi:run', 'uwsgi=pyuwsgi:run'],
+        'console_scripts': ['pyuwsgi=pyuwsgi_main:run', 'uwsgi=pyuwsgi_main:run'],
         },
     classifiers=[
         'Development Status :: 5 - Production/Stable',
