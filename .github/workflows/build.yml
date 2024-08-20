@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       sdist_name: ${{ steps.build_sdist.outputs.sdist_name }}
+      append_version: ${{ steps.build_sdist.outputs.append_version }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -26,7 +27,8 @@ jobs:
         run: |
           git submodule update --init
           make sdist
-          echo "sdist_name=pyuwsgi-$(make print-version)" >> $GITHUB_OUTPUT
+          echo "sdist_name=pyuwsgi-$(make print-version)" >> "$GITHUB_OUTPUT"
+          echo "append_version=$(cat append-version)" >> "$GITHUB_OUTPUT"
 
       - uses: actions/upload-artifact@v3
         with:
@@ -88,7 +90,7 @@ jobs:
         env:
           CIBW_ARCHS: ${{ matrix.arch }}
           CIBW_SKIP: cp36-* cp38-macosx_arm64 cp313-* pp*
-          CIBW_ENVIRONMENT: APPEND_VERSION="" UWSGI_PROFILE=pyuwsginossl
+          CIBW_ENVIRONMENT: APPEND_VERSION=${{ needs.build_sdist.outputs.append_version }} UWSGI_PROFILE=pyuwsginossl
           CIBW_TEST_COMMAND: "pyuwsgi --help"
           CIBW_BEFORE_BUILD_MACOS: "find . -name '*.o' -delete && IS_MACOS=1 ./pre_build.sh"
           CIBW_BEFORE_BUILD_LINUX: "find . -name '*.o' -delete && ./pre_build.sh && (yum install -y zlib-devel || apk add zlib-dev)"
