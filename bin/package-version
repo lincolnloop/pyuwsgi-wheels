@@ -1,0 +1,39 @@
+#!/usr/bin/env python3
+import os.path
+import subprocess
+import sys
+
+_ROOT = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
+
+# if 0: use the upstream version
+# if >0: append `.post1` / `.a1` as needed
+SERIAL = 1
+
+
+def main() -> int:
+    upstream = subprocess.check_output(
+        (sys.executable, 'setup.pyuwsgi.py', '--version'),
+        cwd=os.path.join(_ROOT, 'uwsgi'),
+    ).strip().decode()
+
+    if os.path.exists('patches') and os.listdir('patches'):
+        if not SERIAL:
+            raise SystemExit('SERIAL must be >0 if there are patches!')
+        append = 'a'
+        # increment the final version segment to indicate a future pre-release
+        parts = upstream.split('.')
+        parts[-1] = str(int(parts[-1]) + 1)
+        upstream = '.'.join(parts)
+    else:
+        append = '.post'
+
+    if SERIAL:
+        print(f'{upstream}{append}{SERIAL}')
+    else:
+        print(upstream)
+
+    return 0
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

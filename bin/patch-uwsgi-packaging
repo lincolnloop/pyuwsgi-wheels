@@ -1,0 +1,61 @@
+#!/usr/bin/env python3
+import argparse
+import os.path
+import shutil
+import subprocess
+
+_ROOT = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
+
+
+def root_path(*s: str) -> str:
+    return os.path.join(_ROOT, *s)
+
+
+_PACKAGE_VERSION = os.path.join(_ROOT, 'bin', 'package-version')
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument('uwsgi_dir')
+    args = parser.parse_args()
+
+    version = subprocess.check_output(_PACKAGE_VERSION).strip().decode()
+
+    def uwsgi_path(*s: str) -> str:
+        return os.path.join(args.uwsgi_dir, *s)
+
+    # copy our setup.py over with the adjusted `version=`
+    found_version_line = False
+    with open(uwsgi_path('setup.py'), 'w') as setup_dest:
+        with open(root_path('setup.py')) as setup_src:
+            for line in setup_src:
+                if line == '    version=uwsgiconfig.uwsgi_version + "",\n':
+                    found_version_line = True
+                    line = f'    version={version!r},\n'
+                setup_dest.write(line)
+    if not found_version_line:
+        raise AssertionError('failed to find `version=...` line in setup.py')
+
+    # create a pyuwsginossl build configuration
+    with open(uwsgi_path('buildconf', 'pyuwsginossl.ini'), 'w') as ini_dest:
+        with open(uwsgi_path('buildconf', 'pyuwsgi.ini')) as ini_src:
+            shutil.copyfileobj(ini_src, ini_dest)
+            ini_dest.write('ssl = false\n')
+
+    # remove stale PKG-INFO
+    os.remove(uwsgi_path('PKG-INFO'))
+
+    # apply patches (if applicable)
+    if os.path.exists('patches'):
+        patches = sorted(os.listdir(root_path('patches')))
+        for patch in patches:
+            subprocess.check_call(
+                ('patch', '-p1', '-i', root_path('patches', patch)),
+                cwd=uwsgi_path(),
+            )
+
+    return 0
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())
