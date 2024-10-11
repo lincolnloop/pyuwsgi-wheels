@@ -83,7 +83,7 @@ jobs:
           package-dir: ./${{ needs.build_sdist.outputs.sdist_name }}
         env:
           CIBW_ARCHS: ${{ matrix.arch }}
-          CIBW_SKIP: cp36-* cp38-macosx_arm64 cp313-* pp*
+          CIBW_SKIP: cp36-* cp38-macosx_arm64 pp*
           CIBW_ENVIRONMENT: UWSGI_PROFILE=pyuwsginossl
           CIBW_TEST_COMMAND: "pyuwsgi --help"
           CIBW_BEFORE_BUILD_MACOS: "find . -name '*.o' -delete && IS_MACOS=1 ./pre_build.sh"
