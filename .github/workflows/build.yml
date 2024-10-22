@@ -26,7 +26,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: dist
+          name: dist-sdist
           path: dist
 
       - uses: actions/upload-artifact@v4
@@ -52,7 +52,7 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: dist
+          name: dist-sdist
           path: dist
 
       - uses: actions/download-artifact@v4
@@ -89,9 +89,9 @@ jobs:
           CIBW_BEFORE_BUILD_MACOS: "find . -name '*.o' -delete && IS_MACOS=1 ./pre_build.sh"
           CIBW_BEFORE_BUILD_LINUX: "find . -name '*.o' -delete && ./pre_build.sh && (yum install -y zlib-devel || apk add zlib-dev)"
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
-          name: dist
+          name: dist-${{ matrix.os }}-${{ matrix.arch }}
           path: dist
   verify:
     name: Verify wheels
@@ -100,10 +100,13 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: dist
+          pattern: dist-*
           path: dist
+          merge-multiple: true
+      - name: Verify sdist
+        run: ls -lh dist/*.tar.gz
       - name: Verify wheels
-        run: ls -lh dist
+        run: ls -lh dist/*.whl
   pypi-publish:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
     needs: [verify]
@@ -117,7 +120,8 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: dist
+          pattern: dist-*
           path: dist
+          merge-multiple: true
       - name: Publish package distributions to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
