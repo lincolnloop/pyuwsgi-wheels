@@ -17,7 +17,7 @@ else
 fi
 
 JANSSON_HASH=6e85f42dabe49a7831dbdd6d30dca8a966956b51a9a50ed534b82afc3fa5b2f4
-JANSSON_DOWNLOAD_URL=http://www.digip.org/jansson/releases
+JANSSON_DOWNLOAD_URL=https://github.com/akheron/jansson/releases/download/v2.11/jansson-2.11.tar.gz
 JANSSON_ROOT=jansson-2.11
 
 PCRE2_HASH=86b9cb0aa3bcb7994faa88018292bc704cdbb708e785f7c74352ff6ea7d3175b
@@ -103,7 +103,7 @@ function check_sha256sum {
 function build_jansson {
     if [ -e jansson-stamp ]; then return; fi
     echo "building jansson from $JANSSON_DOWNLOAD_URL"
-    fetch_unpack "${JANSSON_DOWNLOAD_URL}/${JANSSON_ROOT}.tar.gz"
+    fetch_unpack "${JANSSON_DOWNLOAD_URL}"
     check_sha256sum "${ARCHIVE_SDIR:-archives}/${JANSSON_ROOT}.tar.gz" "${JANSSON_HASH}"
     (cd "${JANSSON_ROOT}" \
         && ./configure --prefix="$BUILD_PREFIX" \
