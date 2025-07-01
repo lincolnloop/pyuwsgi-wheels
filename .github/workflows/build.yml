@@ -71,13 +71,13 @@ jobs:
         run: brew unlink pcre2
 
       - name: Build wheels
-        uses: pypa/cibuildwheel@v2.20.0
+        uses: pypa/cibuildwheel@v3.0
         with:
           output-dir: dist
           package-dir: ./${{ needs.build_sdist.outputs.sdist_name }}
         env:
           CIBW_ARCHS: ${{ matrix.arch }}
-          CIBW_SKIP: cp36-* cp38-macosx_arm64 pp*
+          CIBW_SKIP: cp38-macosx_arm64
           CIBW_ENVIRONMENT: UWSGI_PROFILE=pyuwsginossl
           CIBW_TEST_COMMAND: "pyuwsgi --help"
           CIBW_BEFORE_BUILD_MACOS: "find . -name '*.o' -delete && IS_MACOS=1 ./pre_build.sh"
