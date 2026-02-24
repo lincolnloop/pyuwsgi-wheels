@@ -90,7 +90,7 @@ function build_pcre2 {
     fetch_unpack "${PCRE2_DOWNLOAD_URL}"
     check_sha256sum "${ARCHIVES_SDIR:-archives}/${PCRE2_ROOT}.tar.gz" "$PCRE2_HASH"
     (cd "${PCRE2_ROOT}" \
-        && ./configure --prefix="$BUILD_PREFIX" \
+        && CFLAGS="${ARCHFLAGS:-}" LDFLAGS="${ARCHFLAGS:-}" ./configure --prefix="$BUILD_PREFIX" \
         && make -j4 \
         && "${make_install[@]}")
     touch pcre2-stamp
@@ -118,7 +118,7 @@ function build_jansson {
     fetch_unpack "${JANSSON_DOWNLOAD_URL}"
     check_sha256sum "${ARCHIVE_SDIR:-archives}/${JANSSON_ROOT}.tar.gz" "${JANSSON_HASH}"
     (cd "${JANSSON_ROOT}" \
-        && ./configure --prefix="$BUILD_PREFIX" \
+        && CFLAGS="${ARCHFLAGS:-}" LDFLAGS="${ARCHFLAGS:-}" ./configure --prefix="$BUILD_PREFIX" \
         && make -j4 \
         && "${make_install[@]}")
     touch jansson-stamp

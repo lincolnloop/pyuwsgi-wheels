@@ -44,7 +44,7 @@ jobs:
         - {os: ubuntu-24.04-arm, arch: aarch64}
         - {os: ubuntu-latest, arch: i686}
         - {os: ubuntu-latest, arch: x86_64}
-        - {os: macos-13, arch: x86_64}
+        - {os: macos-14, arch: x86_64}
         - {os: macos-14, arch: arm64}
       fail-fast: false
 
