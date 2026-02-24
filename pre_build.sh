@@ -3,14 +3,26 @@ set -eu -o pipefail
 
 if [ -n "${IS_MACOS:-}" ]; then
   # make sure the linked binaries are equivalent to our target
-  python="$(command -v python)"
-  min_ver="$(
-    otool -l "$python" |
-    grep -A2 LC_VERSION_MIN_MACOSX |
-    tail -1 |
-    awk '{print $2}'
-  )"
-  export MACOSX_DEPLOYMENT_TARGET="$min_ver"
+  if [ -z "${MACOSX_DEPLOYMENT_TARGET:-}" ]; then
+    python="$(command -v python)"
+    # Python < 3.14 uses LC_VERSION_MIN_MACOSX; Python 3.14+ uses LC_BUILD_VERSION
+    min_ver="$(
+      otool -l "$python" |
+      grep -A2 LC_VERSION_MIN_MACOSX |
+      tail -1 |
+      awk '{print $2}'
+    )" || min_ver="$(
+      otool -l "$python" |
+      grep -A4 LC_BUILD_VERSION |
+      grep "minos" |
+      awk '{print $2}'
+    )"
+    if [ -z "$min_ver" ]; then
+      echo "ERROR: Could not determine MACOSX_DEPLOYMENT_TARGET from binary" >&2
+      exit 1
+    fi
+    export MACOSX_DEPLOYMENT_TARGET="$min_ver"
+  fi
   make_install=(sudo make install)
 else
   make_install=(make install)
@@ -78,7 +90,7 @@ function build_pcre2 {
     fetch_unpack "${PCRE2_DOWNLOAD_URL}"
     check_sha256sum "${ARCHIVES_SDIR:-archives}/${PCRE2_ROOT}.tar.gz" "$PCRE2_HASH"
     (cd "${PCRE2_ROOT}" \
-        && ./configure --prefix="$BUILD_PREFIX" \
+        && CFLAGS="${ARCHFLAGS:-}" LDFLAGS="${ARCHFLAGS:-}" ./configure --prefix="$BUILD_PREFIX" \
         && make -j4 \
         && "${make_install[@]}")
     touch pcre2-stamp
@@ -106,7 +118,7 @@ function build_jansson {
     fetch_unpack "${JANSSON_DOWNLOAD_URL}"
     check_sha256sum "${ARCHIVE_SDIR:-archives}/${JANSSON_ROOT}.tar.gz" "${JANSSON_HASH}"
     (cd "${JANSSON_ROOT}" \
-        && ./configure --prefix="$BUILD_PREFIX" \
+        && CFLAGS="${ARCHFLAGS:-}" LDFLAGS="${ARCHFLAGS:-}" ./configure --prefix="$BUILD_PREFIX" \
         && make -j4 \
         && "${make_install[@]}")
     touch jansson-stamp
