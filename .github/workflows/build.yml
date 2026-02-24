@@ -79,7 +79,7 @@ jobs:
           CIBW_ARCHS: ${{ matrix.arch }}
           CIBW_SKIP: cp38-macosx_arm64 cp31?t-*
           CIBW_ENVIRONMENT: UWSGI_PROFILE=pyuwsginossl
-          CIBW_ENVIRONMENT_MACOS: UWSGI_PROFILE=pyuwsginossl APPEND_CFLAGS="${ARCHFLAGS:-}" LDFLAGS="${ARCHFLAGS:-}"
+          CIBW_ENVIRONMENT_MACOS: UWSGI_PROFILE=pyuwsginossl ARCHFLAGS="${{ matrix.arch == 'x86_64' && '-arch x86_64' || '-arch arm64' }}" APPEND_CFLAGS="${{ matrix.arch == 'x86_64' && '-arch x86_64' || '-arch arm64' }}" LDFLAGS="${{ matrix.arch == 'x86_64' && '-arch x86_64' || '-arch arm64' }}"
           CIBW_TEST_COMMAND: "pyuwsgi --help"
           CIBW_BEFORE_BUILD_MACOS: "find . -name '*.o' -delete && IS_MACOS=1 ./pre_build.sh"
           CIBW_BEFORE_BUILD_LINUX: "find . -name '*.o' -delete && ./pre_build.sh && (yum install -y zlib-devel || apk add zlib-dev)"
