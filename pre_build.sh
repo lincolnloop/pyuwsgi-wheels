@@ -3,14 +3,26 @@ set -eu -o pipefail
 
 if [ -n "${IS_MACOS:-}" ]; then
   # make sure the linked binaries are equivalent to our target
-  python="$(command -v python)"
-  min_ver="$(
-    otool -l "$python" |
-    grep -A2 LC_VERSION_MIN_MACOSX |
-    tail -1 |
-    awk '{print $2}'
-  )"
-  export MACOSX_DEPLOYMENT_TARGET="$min_ver"
+  if [ -z "${MACOSX_DEPLOYMENT_TARGET:-}" ]; then
+    python="$(command -v python)"
+    # Python < 3.14 uses LC_VERSION_MIN_MACOSX; Python 3.14+ uses LC_BUILD_VERSION
+    min_ver="$(
+      otool -l "$python" |
+      grep -A2 LC_VERSION_MIN_MACOSX |
+      tail -1 |
+      awk '{print $2}'
+    )" || min_ver="$(
+      otool -l "$python" |
+      grep -A4 LC_BUILD_VERSION |
+      grep "minos" |
+      awk '{print $2}'
+    )"
+    if [ -z "$min_ver" ]; then
+      echo "ERROR: Could not determine MACOSX_DEPLOYMENT_TARGET from binary" >&2
+      exit 1
+    fi
+    export MACOSX_DEPLOYMENT_TARGET="$min_ver"
+  fi
   make_install=(sudo make install)
 else
   make_install=(make install)
