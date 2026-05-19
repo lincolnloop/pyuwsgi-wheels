@@ -44,6 +44,7 @@ jobs:
         - {os: ubuntu-24.04-arm, arch: aarch64}
         - {os: ubuntu-latest, arch: i686}
         - {os: ubuntu-latest, arch: x86_64}
+        - {os: ubuntu-latest, arch: riscv64}
         - {os: macos-14, arch: x86_64}
         - {os: macos-14, arch: arm64}
       fail-fast: false
@@ -65,6 +66,12 @@ jobs:
           tar -xvzf "dist/${{ needs.build_sdist.outputs.sdist_name }}.tar.gz"
           rm -rf dist
           chmod +x pre_build.sh
+
+      - name: Set up QEMU
+        if: matrix.arch == 'riscv64'
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: riscv64
 
       - name: avoid homebrew pcre2
         if: matrix.os == 'macos-14'
