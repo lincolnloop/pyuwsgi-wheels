@@ -44,8 +44,8 @@ jobs:
         - {os: ubuntu-24.04-arm, arch: aarch64}
         - {os: ubuntu-latest, arch: i686}
         - {os: ubuntu-latest, arch: x86_64}
-        - {os: macos-14, arch: x86_64}
-        - {os: macos-14, arch: arm64}
+        - {os: macos-26, arch: x86_64}
+        - {os: macos-26, arch: arm64}
       fail-fast: false
 
     steps:
@@ -67,17 +67,17 @@ jobs:
           chmod +x pre_build.sh
 
       - name: avoid homebrew pcre2
-        if: matrix.os == 'macos-14'
+        if: matrix.os == 'macos-26'
         run: brew unlink pcre2
 
       - name: Build wheels
-        uses: pypa/cibuildwheel@v3.3.1
+        uses: pypa/cibuildwheel@v4.3.1
         with:
           output-dir: dist
           package-dir: ./${{ needs.build_sdist.outputs.sdist_name }}
         env:
           CIBW_ARCHS: ${{ matrix.arch }}
-          CIBW_SKIP: cp38-macosx_arm64 cp31?t-*
+          CIBW_SKIP: cp31?t-*
           CIBW_ENVIRONMENT: UWSGI_PROFILE=pyuwsginossl
           CIBW_ENVIRONMENT_MACOS: UWSGI_PROFILE=pyuwsginossl ARCHFLAGS="${{ matrix.arch == 'x86_64' && '-arch x86_64' || '-arch arm64' }}" APPEND_CFLAGS="${{ matrix.arch == 'x86_64' && '-arch x86_64' || '-arch arm64' }}" LDFLAGS="${{ matrix.arch == 'x86_64' && '-arch x86_64' || '-arch arm64' }}"
           CIBW_TEST_COMMAND: "pyuwsgi --help"
