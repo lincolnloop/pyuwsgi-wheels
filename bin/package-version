@@ -7,7 +7,7 @@ _ROOT = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
 
 # if 0: use the upstream version
 # if >0: append `.post1` / `.a1` as needed
-SERIAL = 1
+SERIAL = 0
 
 
 def main() -> int:
